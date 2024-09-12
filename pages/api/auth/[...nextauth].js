@@ -11,7 +11,7 @@ export default NextAuth({
       },
       authorize: async (credentials) => {
         // Hardcoded user
-        const user = { id: 1, name: "User" };
+        const user = { id: 1, name: "User", email: "user@example.com" };
         if (
           credentials.username === "user" &&
           credentials.password === "pass"
@@ -25,5 +25,19 @@ export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/signin",
+  },
+  callbacks: {
+    async session({ session, token, user }) {
+      // Customize session object
+      session.user.id = token.id; // Add user ID to session
+      return session;
+    },
+    async jwt({ token, user }) {
+      // Persist user id in the token if available
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
   },
 });

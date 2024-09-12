@@ -1,6 +1,5 @@
-import { signIn } from "next-auth/react";
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 
 export default function SignIn() {
@@ -9,19 +8,20 @@ export default function SignIn() {
   const [loginError, setLoginError] = useState(""); // State for login error
   const router = useRouter();
 
+  useEffect(() => {
+    if (router.query.error) {
+      setLoginError("Invalid username or password. Please try again.");
+    }
+  }, [router.query.error]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await signIn("credentials", {
-      redirect: false,
+    await signIn("credentials", {
+      redirect: true,
       username,
       password,
+      callbackUrl: "/", // Optional: specify a custom redirect URL
     });
-
-    if (result.ok) {
-      router.push("/");
-    } else {
-      setLoginError("Invalid username or password. Please try again."); // Set error message
-    }
   };
 
   const closeModal = () => {
