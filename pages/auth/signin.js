@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
+import { signIn } from "next-auth/react";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
